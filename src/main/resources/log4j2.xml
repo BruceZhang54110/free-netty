@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--
+status              log4j2自身日志输出等级
+monitorInterval     自动检测间隔 30s
+-->
+
+<!--%p：信息级别-->
+<!--%d：时间，后面一串是日期格式-->
+<!--%l ：输出日志事件的发生位置，包括类目名、发生的线程，以及在代码中的行数-->
+<!--%n: 换行-->
+<!--%m:最重要的一个，这代表真正的日志内容-->
+<configuration status="WARN" monitorInterval="60">
+    <properties>
+        <!--日志目录-->
+        <property name="LOG_HOME">./free-log/</property>
+        <!--日志名称-->
+        <property name="LOG_NAME">application</property>
+        <!--日志格式-->
+        <property name="LOG_FORMAT">%d{yyyy-MM-dd HH:mm:ss,SSS}-[%p]-[%t][%l] %m%n</property>
+    </properties>
+
+    <appenders>
+        <!--控制台日志-->
+        <console name="console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout pattern="${LOG_FORMAT}"/>
+            <!--
+                        <JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json" recyclerFactory="queue"/>
+            -->
+        </console>
+
+        <RollingRandomAccessFile name="fileLog" fileName="${LOG_HOME}/${LOG_NAME}.log" immediateFlush="true"
+                                 filePattern="${LOG_HOME}/${LOG_NAME}_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${LOG_FORMAT}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+
+        </RollingRandomAccessFile>
+
+    </appenders>
+
+    <loggers>
+
+        <!--根日志配置-->
+        <root level="debug">
+            <appender-ref ref="console"/>
+            <!--<appender-ref ref="fileLog"/>-->
+        </root>
+
+    </loggers>
+</configuration>
