@@ -28,7 +28,7 @@ public class WsServer {
                 .handler(new LoggingHandler())
                 .childHandler(new WebSocketlnitializer());
 
-            ChannelFuture channelFuture = bootstrap.bind(9999).sync();
+            ChannelFuture channelFuture = bootstrap.bind(9998).sync();
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             LOG.error(e.getMessage(), e);
