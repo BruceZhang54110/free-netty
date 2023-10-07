@@ -1,5 +1,7 @@
 package com.zhw.free.ws;
 
+import com.zhw.free.ws.event.ConnectionEventHandler;
+import com.zhw.free.ws.event.ConnectionEventSubject;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -12,6 +14,13 @@ import io.netty.handler.stream.ChunkedWriteHandler;
  * @author Bruce
  */
 public class WebSocketlnitializer extends ChannelInitializer {
+
+    private ConnectionEventHandler connectionEventHandler;
+
+    public WebSocketlnitializer(ConnectionEventHandler connectionEventHandler) {
+        this.connectionEventHandler = connectionEventHandler;
+    }
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
@@ -24,7 +33,10 @@ public class WebSocketlnitializer extends ChannelInitializer {
         // WebSocketServerProtocolHandler 核心功能是将 http协议升级为 ws协议 , 保持长连接
         pipeline.addLast(new WebSocketServerProtocolHandler("/hello"));
         // 服务端逻辑处理
-        pipeline.addLast(new WebSocketServerHandler());
+        pipeline.addLast("webSocketServerHandler", new WebSocketServerHandler());
+        // 事件通知逻辑
+        pipeline.addLast("connectionEventHandler", connectionEventHandler);
+        pipeline.fireUserEventTriggered(ConnectionEventType.CONNECT);
 
     }
 }
