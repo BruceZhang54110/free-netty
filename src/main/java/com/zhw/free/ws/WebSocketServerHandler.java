@@ -16,6 +16,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) {
         System.out.println("服务器收到消息：" + msg.text());
+        if(msg.text().equals("0")) {
+            int a = 34/0;
+        }
         // 回复消息
         ctx.channel().writeAndFlush(new TextWebSocketFrame("服务器时间：" + LocalDateTime.now() + " " + msg.text()));
     }
@@ -29,6 +32,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<TextWebS
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         System.out.println("发生异常：" + cause.getMessage());
         // 关闭连接
+        ctx.fireUserEventTriggered(ConnectionEventType.EXCEPTION);
         ctx.close();
     }
 }

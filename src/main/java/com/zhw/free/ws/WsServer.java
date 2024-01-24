@@ -43,10 +43,12 @@ public class WsServer {
             // 创建引导
             ServerBootstrap bootstrap = new ServerBootstrap();
 
+            // 设置线程组
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler())
-                    .childHandler(new WebSocketlnitializer(connectionEventHandler));
+                    // 装配子通道流水线，设置处理器
+                    .childHandler(new WebSocketlInitializer(connectionEventHandler));
 
             ChannelFuture channelFuture = bootstrap.bind(9998).sync();
             channelFuture.channel().closeFuture().sync();

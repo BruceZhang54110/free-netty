@@ -22,6 +22,7 @@ public class ConnectionEventHandler extends ChannelDuplexHandler {
     private static final Logger log = LoggerFactory.getLogger(ConnectionEventHandler.class);
 
     public ConnectionEventHandler(ConnectionEventSubject connectionEventSubject) {
+        // 注入主题
         this.connectionEventSubject = connectionEventSubject;
         if (this.eventExecutor == null) {
             this.eventExecutor = new ConnectionEventExecutor();
@@ -29,8 +30,14 @@ public class ConnectionEventHandler extends ChannelDuplexHandler {
 
     }
 
+    /**
+     * 观察事件的主题
+     */
     private ConnectionEventSubject connectionEventSubject;
 
+    /**
+     * 事件执行器
+     */
     private ConnectionEventExecutor eventExecutor;
 
     @Override
@@ -40,13 +47,18 @@ public class ConnectionEventHandler extends ChannelDuplexHandler {
             switch (connectionEventType) {
                 case CONNECT:
                     onEvent(ConnectionEventType.CONNECT);
-
+                case CLOSE:
+                    onEvent(ConnectionEventType.CLOSE);
             }
         }
     }
 
+    /**
+     * 触发事件
+     * @param type
+     */
     private void onEvent(final ConnectionEventType type) {
-        log.info("onEvent start");
+        log.info("收到事件， onEvent start");
         if (this.connectionEventSubject != null) {
             this.eventExecutor.onEvent(() -> ConnectionEventHandler.this.connectionEventSubject.onEvent(type));
         }
