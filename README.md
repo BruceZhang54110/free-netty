@@ -1,4 +1,3 @@
-# free-netty
-netty demo
+# netty demo
 
-[[netty.md]]
+## 1.netty websocket 结合事件通知机制
